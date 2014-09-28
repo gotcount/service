@@ -1,0 +1,8 @@
+# define datastores for data loading
+datastores:
+  - jdbc: jdbc:mysql://localhost/d012dad2
+    user: root
+    pwd: 
+    table: accesslog
+    columns: path,hostname,title,url,timestamp
+    
