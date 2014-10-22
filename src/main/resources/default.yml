@@ -4,5 +4,5 @@ datastores:
     user: root
     pwd: 
     table: accesslog
-    columns: path,hostname,title,url,timestamp
+    columns: path,hostname,title,url,timer,timestamp
     
