@@ -9,6 +9,7 @@ import de.comci.aggregator.service.configuration.Datastore;
 import de.comci.aggregator.service.health.BasicHealthCheck;
 import de.comci.aggregator.service.resources.QueryResource;
 import de.comci.bitmap.BitMapCollection;
+import de.comci.bitmap.DbSchemaBuilder;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -49,8 +50,17 @@ public class AggregatorServiceApplication extends Application<AggregatorServiceC
                         store.getJdbc(),
                         store.getUser(),
                         store.getPwd());
-                            
-                indices.put(store.getTable(), BitMapCollection.create(connect, store.getTable(), store.getColumns().split(",")).get());
+
+                indices.put(store.getTable(), 
+                        new DbSchemaBuilder(
+                                connect, 
+                                store.getTable(), 
+                                store.getColumns().stream()
+                                        .map(c -> {
+                                            return new DbSchemaBuilder.Column(c.getName(), c.getType());
+                                        })
+                                        .toArray(s -> new DbSchemaBuilder.Column[s])
+                        ).build());
             } catch (SQLException ex) {
                 Logger.getLogger(AggregatorServiceApplication.class.getName()).log(Level.SEVERE, null, ex);
             }

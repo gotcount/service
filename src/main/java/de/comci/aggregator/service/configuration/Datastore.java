@@ -7,6 +7,7 @@
 package de.comci.aggregator.service.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -35,7 +36,7 @@ public class Datastore {
     private String table;
         
     @JsonProperty
-    private String columns = "*";
+    private List<Column> columns;
 
     public Datastore() {
         // jackson        
@@ -57,7 +58,7 @@ public class Datastore {
         return table;
     }
 
-    public String getColumns() {
+    public List<Column> getColumns() {
         return columns;
     }
     

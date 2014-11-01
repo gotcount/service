@@ -4,5 +4,17 @@ datastores:
     user: root
     pwd: 
     table: accesslog
-    columns: path,hostname,title,url,timer,timestamp
+    columns: 
+        - name : path
+          type : java.lang.String
+        - name : hostname
+          type : java.lang.String          
+        - name : title
+          type : java.lang.String
+        - name : url
+          type : java.lang.String
+        - name : timer
+          type : java.lang.Integer
+        - name : timestamp
+          type : java.lang.Long
     
