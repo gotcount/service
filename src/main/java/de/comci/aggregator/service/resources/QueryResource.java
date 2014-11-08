@@ -7,16 +7,17 @@ package de.comci.aggregator.service.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import de.comci.aggregator.service.representation.AggregateResult;
+import de.comci.aggregator.service.representation.Dimension;
+import de.comci.aggregator.service.representation.Index;
 import de.comci.aggregator.service.representation.Query;
 import de.comci.bitmap.BitMapCollection;
 import de.comci.bitmap.SortDirection;
+import de.comci.bitmap.Value;
 import de.comci.gotcount.query.Filter;
-import io.dropwizard.jersey.caching.CacheControl;
+import de.comci.histogram.Histogram;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.ws.rs.DefaultValue;
@@ -46,8 +47,9 @@ public class QueryResource {
 
     @GET
     @Timed
-    public GenericEntity<List<String>> list() {
-        return new GenericEntity<>(new LinkedList<>(indices.keySet()), List.class);
+    public GenericEntity<List<Index>> list() {        
+        List<Index> ixs = indices.entrySet().stream().map(e -> new Index(e.getKey(), e.getValue().size())).collect(Collectors.toList());
+        return new GenericEntity<>(ixs, List.class);
     }
 
     /**
@@ -69,10 +71,14 @@ public class QueryResource {
     @GET
     @Path("/{index}")
     @Timed
-    public GenericEntity<List<String>> getDimensions(
+    public GenericEntity<List<Dimension>> getDimensions(
             @PathParam("index") String index) {
-
-        return new GenericEntity<>(getCollection(index).getDimensions().stream().map(d -> d.getName()).collect(Collectors.toList()), List.class);
+        
+        final List<Dimension> list = getCollection(index).getDimensions()
+                .stream()
+                    .map(d -> new Dimension(d.getName(), d.getCardinality(), d.getType())).collect(Collectors.toList());
+        
+        return new GenericEntity<>(list, List.class);
 
     }
 
@@ -96,19 +102,26 @@ public class QueryResource {
             @PathParam("dimension") String dimension,
             @PathParam("topN") @DefaultValue("10") int limit,
             @QueryParam("query") @DefaultValue("") Filter query) {
+        
+        final BitMapCollection indexCollection = getCollection(index);
 
-        if (getCollection(index).getDimensions().stream().noneMatch(d -> d.getName().equals(dimension))) {
+        if (indexCollection.getDimensions().stream().noneMatch(d -> d.getName().equals(dimension))) {
             throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).build());
         }
 
         Map<String, Predicate> filters = new HashMap<>();
-        getCollection(index).getDimensions().stream().filter(p -> query.getDimensions().contains(p.getName())).forEach(d -> {
+        indexCollection.getDimensions().stream().filter(p -> query.getDimensions().contains(p.getName())).forEach(d -> {
             filters.put(d.getName(), p -> query.getPredicate(d.getName()).test(p));
         });
-
+        
         return new AggregateResult(
-                new Query(dimension, Math.abs(limit), (limit > 0) ? SortDirection.DESCENDING : SortDirection.ASCENDING),
-                getCollection(index).histogram(dimension, filters, limit));
+            new Query(
+                dimension, 
+                Math.abs(limit), 
+                (limit > 0) ? SortDirection.DESCENDING : SortDirection.ASCENDING
+            ),
+            indexCollection.histogram(dimension, filters, limit)
+        );
 
     }
 

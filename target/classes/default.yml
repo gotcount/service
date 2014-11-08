@@ -14,7 +14,8 @@ datastores:
         - name : url
           type : java.lang.String
         - name : timer
-          type : java.lang.Integer
+          type : java.lang.Long
         - name : timestamp
           type : java.lang.Long
+          precision : 3600
     

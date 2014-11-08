@@ -23,6 +23,9 @@ public class Column {
     @NotNull
     @NotEmpty
     Class<?> type; 
+    
+    @JsonProperty
+    Double precision = null;
 
     public Column() {
         // jackson
@@ -41,5 +44,9 @@ public class Column {
     public void setType(String type) throws ClassNotFoundException {
         this.type = Class.forName(type);
     }
-    
+
+    public Double getPrecision() {
+        return precision;
+    }
+           
 }

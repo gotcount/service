@@ -5,6 +5,7 @@
  */
 package de.comci.aggregator.service.resources;
 
+import de.comci.aggregator.service.representation.Index;
 import de.comci.bitmap.BitMapCollection;
 import de.comci.bitmap.Dimension;
 import de.comci.gotcount.query.Filter;
@@ -32,7 +33,7 @@ public class QueryResourceTest {
 
     @Before
     public void setUp() {
-        
+
         singleColumnMock = mock(BitMapCollection.class);
         when(singleColumnMock.getDimensions()).thenReturn(Arrays.asList(new Dimension<String>() {
 
@@ -45,12 +46,17 @@ public class QueryResourceTest {
             public Class<String> getType() {
                 return String.class;
             }
-            
+
+            @Override
+            public long getCardinality() {
+                return 1l;
+            }
+
         }));
-        
+
         Map<String, BitMapCollection> maps = new HashMap<>();
         maps.put(SINGLE_COLUMN, singleColumnMock);
-        
+
         instance = new QueryResource(maps);
     }
     private static final String SINGLE_COLUMN = "single column";
@@ -68,22 +74,30 @@ public class QueryResourceTest {
     @Test
     public void listSingleInstance() {
         final HashMap<String, BitMapCollection> hashMap = new HashMap<>();
-        hashMap.put("test", null);
+        hashMap.put("test", BitMapCollection.create().dimension("test", String.class).add("123").build());
         QueryResource single = new QueryResource(hashMap);
-        assertThat(single.list().getEntity()).containsOnly("test");
+        assertThat(single.list().getEntity()).containsOnly(new Index("test", 1));
     }
 
     @Test
     public void listMultipleInstance() {
         final HashMap<String, BitMapCollection> hashMap = new HashMap<>();
-        hashMap.put("test0", null);
-        hashMap.put("test1", null);
-        hashMap.put("test2", null);
-        hashMap.put("test3", null);
+
+        BitMapCollection bmc = BitMapCollection.create().dimension("test", String.class).add("123").build();
+
+        hashMap.put("test0", bmc);
+        hashMap.put("test1", bmc);
+        hashMap.put("test2", bmc);
+        hashMap.put("test3", bmc);
         QueryResource single = new QueryResource(hashMap);
-        assertThat(single.list().getEntity()).containsOnly("test0", "test1", "test2", "test3");
+        assertThat(single.list().getEntity()).containsOnly(
+                new Index("test0", 1),
+                new Index("test1", 1),
+                new Index("test2", 1),
+                new Index("test3", 1)
+        );
     }
- 
+
     @Test
     public void dimensionsFromMissingCollection() {
         try {
@@ -93,12 +107,12 @@ public class QueryResourceTest {
             assertThat(e.getResponse().getStatus()).isEqualTo(404);
         }
     }
-    
+
     @Test
-    public void getDimensionsForCollection()  {
-        assertThat(instance.getDimensions(SINGLE_COLUMN).getEntity()).containsOnly(singleColumnMock.getDimensions().stream().map(d -> d.getName()).toArray(size -> new String[size]));
+    public void getDimensionsForCollection() {
+        assertThat(instance.getDimensions(SINGLE_COLUMN).getEntity()).containsOnly(new de.comci.aggregator.service.representation.Dimension("d0", 1l, String.class));
     }
-    
+
     @Test
     public void histogramFromMissingCollection() {
         try {
@@ -108,9 +122,9 @@ public class QueryResourceTest {
             assertThat(e.getResponse().getStatus()).isEqualTo(404);
         }
     }
-    
+
     @Test
-    public void histogramFromMissingDimension()  {
+    public void histogramFromMissingDimension() {
         try {
             instance.getDimensionHistogram(SINGLE_COLUMN, "dimension", Filter.fromString(""));
             fail("missing WebApplicationException");
@@ -118,10 +132,10 @@ public class QueryResourceTest {
             assertThat(e.getResponse().getStatus()).isEqualTo(404);
         }
     }
-    
+
     @Test
     public void histogramFromDimension() {
-        
+
         instance.getDimensionHistogram(SINGLE_COLUMN, "d0", Filter.fromString(""));
     }
 

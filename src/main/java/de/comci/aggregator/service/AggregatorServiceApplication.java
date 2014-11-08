@@ -57,7 +57,7 @@ public class AggregatorServiceApplication extends Application<AggregatorServiceC
                                 store.getTable(), 
                                 store.getColumns().stream()
                                         .map(c -> {
-                                            return new DbSchemaBuilder.Column(c.getName(), c.getType());
+                                            return new DbSchemaBuilder.Column(c.getName(), c.getType(), c.getPrecision());
                                         })
                                         .toArray(s -> new DbSchemaBuilder.Column[s])
                         ).build());
