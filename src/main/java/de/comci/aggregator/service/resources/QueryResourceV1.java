@@ -35,13 +35,13 @@ import javax.ws.rs.core.Response;
  *
  * @author Sebastian Maier (sebastian.maier@comci.de)
  */
-@Path("/query")
+@Path("/v1/data")
 @Produces(MediaType.APPLICATION_JSON)
-public class QueryResource {
+public class QueryResourceV1 {
 
     private final Map<String, BitMapCollection> indices;
 
-    public QueryResource(Map<String, BitMapCollection> indices) {
+    public QueryResourceV1(Map<String, BitMapCollection> indices) {
         this.indices = indices;
     }
 

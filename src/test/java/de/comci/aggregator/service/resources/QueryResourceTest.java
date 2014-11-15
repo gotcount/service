@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
  */
 public class QueryResourceTest {
 
-    private QueryResource instance;
+    private QueryResourceV1 instance;
     private BitMapCollection singleColumnMock;
 
     public QueryResourceTest() {
@@ -57,7 +57,7 @@ public class QueryResourceTest {
         Map<String, BitMapCollection> maps = new HashMap<>();
         maps.put(SINGLE_COLUMN, singleColumnMock);
 
-        instance = new QueryResource(maps);
+        instance = new QueryResourceV1(maps);
     }
     private static final String SINGLE_COLUMN = "single column";
 
@@ -67,7 +67,7 @@ public class QueryResourceTest {
 
     @Test
     public void listInstancesOnEmptyStorage() {
-        QueryResource empty = new QueryResource(new HashMap<>());
+        QueryResourceV1 empty = new QueryResourceV1(new HashMap<>());
         assertThat(empty.list().getEntity()).isEmpty();
     }
 
@@ -75,7 +75,7 @@ public class QueryResourceTest {
     public void listSingleInstance() {
         final HashMap<String, BitMapCollection> hashMap = new HashMap<>();
         hashMap.put("test", BitMapCollection.create().dimension("test", String.class).add("123").build());
-        QueryResource single = new QueryResource(hashMap);
+        QueryResourceV1 single = new QueryResourceV1(hashMap);
         assertThat(single.list().getEntity()).containsOnly(new Index("test", 1));
     }
 
@@ -89,7 +89,7 @@ public class QueryResourceTest {
         hashMap.put("test1", bmc);
         hashMap.put("test2", bmc);
         hashMap.put("test3", bmc);
-        QueryResource single = new QueryResource(hashMap);
+        QueryResourceV1 single = new QueryResourceV1(hashMap);
         assertThat(single.list().getEntity()).containsOnly(
                 new Index("test0", 1),
                 new Index("test1", 1),
