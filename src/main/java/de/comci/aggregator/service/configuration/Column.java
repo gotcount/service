@@ -18,7 +18,10 @@ public class Column {
     @NotNull
     @NotEmpty
     @JsonProperty
-    String name; 
+    String name;
+    
+    @JsonProperty
+    String alias;
     
     @NotNull
     @NotEmpty
@@ -47,6 +50,14 @@ public class Column {
 
     public Double getPrecision() {
         return precision;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+    
+    public String getLabel() {
+        return (alias != null && !alias.isEmpty()) ? alias : name;
     }
            
 }

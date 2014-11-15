@@ -4,6 +4,7 @@ datastores:
     user: root
     pwd: 
     table: accesslog
+    tableAlias: access
     columns: 
         - name : path
           type : java.lang.String

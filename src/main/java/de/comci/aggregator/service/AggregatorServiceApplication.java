@@ -51,7 +51,7 @@ public class AggregatorServiceApplication extends Application<AggregatorServiceC
                         store.getUser(),
                         store.getPwd());
 
-                indices.put(store.getTable(), 
+                indices.put(store.getTableLabel(), 
                         new DbSchemaBuilder(
                                 connect, 
                                 store.getTable(), 
