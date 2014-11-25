@@ -12,9 +12,7 @@ import de.comci.aggregator.service.representation.Index;
 import de.comci.aggregator.service.representation.Query;
 import de.comci.bitmap.BitMapCollection;
 import de.comci.bitmap.SortDirection;
-import de.comci.bitmap.Value;
 import de.comci.gotcount.query.Filter;
-import de.comci.histogram.Histogram;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Sebastian Maier (sebastian.maier@comci.de)
  */
-@Path("/v1/data")
+@Path("/v1/histogram")
 @Produces(MediaType.APPLICATION_JSON)
 public class QueryResourceV1 {
 
