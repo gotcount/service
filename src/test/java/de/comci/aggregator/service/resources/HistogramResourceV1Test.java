@@ -23,13 +23,10 @@ import static org.mockito.Mockito.*;
  *
  * @author Sebastian Maier (sebastian.maier@comci.de)
  */
-public class QueryResourceTest {
+public class HistogramResourceV1Test {
 
-    private QueryResourceV1 instance;
+    private HistogramResourceV1 instance;
     private BitMapCollection singleColumnMock;
-
-    public QueryResourceTest() {
-    }
 
     @Before
     public void setUp() {
@@ -57,7 +54,7 @@ public class QueryResourceTest {
         Map<String, BitMapCollection> maps = new HashMap<>();
         maps.put(SINGLE_COLUMN, singleColumnMock);
 
-        instance = new QueryResourceV1(maps);
+        instance = new HistogramResourceV1(maps);
     }
     private static final String SINGLE_COLUMN = "single column";
 
@@ -67,7 +64,7 @@ public class QueryResourceTest {
 
     @Test
     public void listInstancesOnEmptyStorage() {
-        QueryResourceV1 empty = new QueryResourceV1(new HashMap<>());
+        HistogramResourceV1 empty = new HistogramResourceV1(new HashMap<>());
         assertThat(empty.list().getEntity()).isEmpty();
     }
 
@@ -75,7 +72,7 @@ public class QueryResourceTest {
     public void listSingleInstance() {
         final HashMap<String, BitMapCollection> hashMap = new HashMap<>();
         hashMap.put("test", BitMapCollection.create().dimension("test", String.class).add("123").build());
-        QueryResourceV1 single = new QueryResourceV1(hashMap);
+        HistogramResourceV1 single = new HistogramResourceV1(hashMap);
         assertThat(single.list().getEntity()).containsOnly(new Index("test", 1));
     }
 
@@ -89,7 +86,7 @@ public class QueryResourceTest {
         hashMap.put("test1", bmc);
         hashMap.put("test2", bmc);
         hashMap.put("test3", bmc);
-        QueryResourceV1 single = new QueryResourceV1(hashMap);
+        HistogramResourceV1 single = new HistogramResourceV1(hashMap);
         assertThat(single.list().getEntity()).containsOnly(
                 new Index("test0", 1),
                 new Index("test1", 1),

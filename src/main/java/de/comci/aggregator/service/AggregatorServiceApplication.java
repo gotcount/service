@@ -7,7 +7,8 @@ package de.comci.aggregator.service;
 
 import de.comci.aggregator.service.configuration.Datastore;
 import de.comci.aggregator.service.health.BasicHealthCheck;
-import de.comci.aggregator.service.resources.QueryResourceV1;
+import de.comci.aggregator.service.resources.HistogramResourceV1;
+import de.comci.aggregator.service.resources.SizeResourceV1;
 import de.comci.bitmap.BitMapCollection;
 import de.comci.bitmap.DbSchemaBuilder;
 import io.dropwizard.Application;
@@ -67,8 +68,11 @@ public class AggregatorServiceApplication extends Application<AggregatorServiceC
         }
 
         // resources
-        final QueryResourceV1 qResource = new QueryResourceV1(indices);
-        environment.jersey().register(qResource);
+        final HistogramResourceV1 histogramResource = new HistogramResourceV1(indices);
+        environment.jersey().register(histogramResource);
+        
+        final SizeResourceV1 sizeResource = new SizeResourceV1(indices);
+        environment.jersey().register(sizeResource);
 
         // health checks
         final BasicHealthCheck bHealth = new BasicHealthCheck();
