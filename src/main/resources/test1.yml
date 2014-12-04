@@ -1,0 +1,17 @@
+# define datastores for data loading
+datastores:
+  - jdbc: jdbc:mysql://localhost/test
+    user: root
+    pwd: 
+    table: mytable
+    columns: 
+        - name : date
+          type : java.sql.Date
+        - name : datetime
+          type : java.sql.Date
+        - name : time
+          type : java.sql.Date
+        - name : email
+          type : java.lang.String
+        - name : company
+          type : java.lang.String

@@ -39,7 +39,7 @@ public class AggregateResult {
     @JsonProperty
     public Map<String, Integer> getAggregate() {
         final Map<String, Integer> h = new LinkedHashMap<>();
-        result.stream().forEach(e -> h.put(e.getKey().getLabel(), e.getCount()));
+        result.stream().sorted((a,b) -> b.getCount() - a.getCount()).forEach(e -> h.put(e.getKey().getLabel(), e.getCount()));
         return h;
     }
     

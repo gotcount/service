@@ -5,6 +5,7 @@
  */
 package de.comci.aggregator.service.resources;
 
+import de.comci.aggregator.service.resources.version1.HistogramResourceV1;
 import de.comci.aggregator.service.representation.Index;
 import de.comci.bitmap.BitMapCollection;
 import de.comci.bitmap.Dimension;

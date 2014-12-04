@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.comci.aggregator.service.resources;
+package de.comci.aggregator.service.resources.version1;
 
 import com.codahale.metrics.annotation.Timed;
 import de.comci.bitmap.BitMapCollection;
@@ -31,11 +31,10 @@ public class SizeResourceV1 extends DefaultResourceV1 {
     }
     
     @GET
-    @Path("/{index}/{dimension}")
+    @Path("/{index}")
     @Timed
     public int getFilteredSize(
             @PathParam("index") String index,
-            @PathParam("dimension") String dimension,
             @QueryParam("query") @DefaultValue("") Filter query) {
 
         final BitMapCollection indexCollection = getCollection(index);
