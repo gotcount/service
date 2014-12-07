@@ -12,7 +12,7 @@ import de.comci.aggregator.service.resources.version1.HistogramResourceV1;
 import de.comci.aggregator.service.resources.version1.SizeResourceV1;
 import de.comci.aggregator.service.resources.version1.V1;
 import de.comci.bitmap.BitMapCollection;
-import de.comci.bitmap.DbSchemaBuilder;
+import de.comci.bitmap.JooqDimensionBuilder;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -54,16 +54,14 @@ public class AggregatorServiceApplication extends Application<AggregatorServiceC
                         store.getUser(),
                         store.getPwd());
 
-                indices.put(store.getTableLabel(), 
-                        new DbSchemaBuilder(
-                                connect, 
-                                store.getTable(), 
-                                store.getColumns().stream()
-                                        .map(c -> {
-                                            return new DbSchemaBuilder.Column(c.getName(), c.getType(), c.getPrecision());
-                                        })
-                                        .toArray(s -> new DbSchemaBuilder.Column[s])
-                        ).build());
+                JooqDimensionBuilder dim = new JooqDimensionBuilder(
+                        connect,
+                        store.getTable()
+                );
+                
+                store.getColumns().stream().forEach(c -> dim.dimension(c.getName(), c.getType(), c.getPrecision()));
+                indices.put(store.getTableLabel(), dim.getCollectionBuilder().build());
+                
             } catch (SQLException ex) {
                 Logger.getLogger(AggregatorServiceApplication.class.getName()).log(Level.SEVERE, null, ex);
             }
