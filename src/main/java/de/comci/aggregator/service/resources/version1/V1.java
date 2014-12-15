@@ -22,7 +22,7 @@ public class V1 {
     
     @GET
     public List<String> features() {
-        return Arrays.asList("histogram", "count");
+        return Arrays.asList("count", "data", "histogram");
     }
     
 }

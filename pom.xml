@@ -22,11 +22,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gotcount-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>gotcount-query</artifactId>
             <version>${project.version}</version>
         </dependency>  
@@ -52,7 +47,12 @@
             <artifactId>mockito-core</artifactId>
             <version>1.9.5</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>gotcount-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

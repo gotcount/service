@@ -8,6 +8,7 @@ package de.comci.aggregator.service;
 import de.comci.aggregator.service.configuration.Datastore;
 import de.comci.aggregator.service.health.BasicHealthCheck;
 import de.comci.aggregator.service.resources.Versions;
+import de.comci.aggregator.service.resources.version1.DataResourceV1;
 import de.comci.aggregator.service.resources.version1.HistogramResourceV1;
 import de.comci.aggregator.service.resources.version1.SizeResourceV1;
 import de.comci.aggregator.service.resources.version1.V1;
@@ -79,6 +80,9 @@ public class AggregatorServiceApplication extends Application<AggregatorServiceC
         
         final SizeResourceV1 sizeResource = new SizeResourceV1(indices);
         environment.jersey().register(sizeResource);
+        
+        final DataResourceV1 dataResource = new DataResourceV1(indices);
+        environment.jersey().register(dataResource);
 
         // health checks
         final BasicHealthCheck bHealth = new BasicHealthCheck();
