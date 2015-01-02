@@ -12,6 +12,7 @@ import de.comci.bitmap.Dimension;
 import de.comci.gotcount.query.Filter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import org.junit.After;
@@ -32,25 +33,11 @@ public class HistogramResourceV1Test {
     @Before
     public void setUp() {
 
-        singleColumnMock = mock(BitMapCollection.class);
-        when(singleColumnMock.getDimensions()).thenReturn(Arrays.asList(new Dimension<String>() {
-
-            @Override
-            public String getName() {
-                return "d0";
-            }
-
-            @Override
-            public Class<String> getType() {
-                return String.class;
-            }
-
-            @Override
-            public long getCardinality() {
-                return 1l;
-            }
-
-        }));
+        singleColumnMock = BitMapCollection
+                .builder()
+                .dimension("d0", String.class)
+                .add(new Object[]{"string"})
+                .build();
 
         Map<String, BitMapCollection> maps = new HashMap<>();
         maps.put(SINGLE_COLUMN, singleColumnMock);
@@ -72,7 +59,7 @@ public class HistogramResourceV1Test {
     @Test
     public void listSingleInstance() {
         final HashMap<String, BitMapCollection> hashMap = new HashMap<>();
-        hashMap.put("test", BitMapCollection.create().dimension("test", String.class).add("123").build());
+        hashMap.put("test", BitMapCollection.builder().dimension("test", String.class).add("123").build());
         HistogramResourceV1 single = new HistogramResourceV1(hashMap);
         assertThat(single.list().getEntity()).containsOnly(new Index("test", 1));
     }
@@ -81,7 +68,7 @@ public class HistogramResourceV1Test {
     public void listMultipleInstance() {
         final HashMap<String, BitMapCollection> hashMap = new HashMap<>();
 
-        BitMapCollection bmc = BitMapCollection.create().dimension("test", String.class).add("123").build();
+        BitMapCollection bmc = BitMapCollection.builder().dimension("test", String.class).add("123").build();
 
         hashMap.put("test0", bmc);
         hashMap.put("test1", bmc);
@@ -114,7 +101,7 @@ public class HistogramResourceV1Test {
     @Test
     public void histogramFromMissingCollection() {
         try {
-            instance.getDimensionHistogram("missing", "123", Filter.fromString(SINGLE_COLUMN));
+            instance.getDimensionHistogram("missing", "123", Filter.fromString(SINGLE_COLUMN), new LinkedList<>());
             fail("missing WebApplicationException");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(404);
@@ -124,7 +111,7 @@ public class HistogramResourceV1Test {
     @Test
     public void histogramFromMissingDimension() {
         try {
-            instance.getDimensionHistogram(SINGLE_COLUMN, "dimension", Filter.fromString(""));
+            instance.getDimensionHistogram(SINGLE_COLUMN, "dimension", Filter.fromString(""), new LinkedList<>());
             fail("missing WebApplicationException");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(404);
@@ -133,8 +120,7 @@ public class HistogramResourceV1Test {
 
     @Test
     public void histogramFromDimension() {
-
-        instance.getDimensionHistogram(SINGLE_COLUMN, "d0", Filter.fromString(""));
+        instance.getDimensionHistogram(SINGLE_COLUMN, "d0", Filter.fromString(""), new LinkedList<>());
     }
-
+    
 }
