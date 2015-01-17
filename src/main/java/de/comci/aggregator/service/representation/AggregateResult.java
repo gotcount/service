@@ -11,6 +11,7 @@ import de.comci.bitmap.Value;
 import de.comci.histogram.Histogram;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -38,9 +39,15 @@ public class AggregateResult {
 
     @JsonProperty
     public Map<String, Integer> getAggregate() {
-        final Map<String, Integer> h = new LinkedHashMap<>();
-        result.stream().sorted((a,b) -> b.getCount() - a.getCount()).forEach(e -> h.put(e.getKey().getLabel(), e.getCount()));
-        return h;
+        return result
+                .stream()
+                .sorted((a,b) -> b.getCount().compareTo(a.getCount()))
+                .collect(
+                    Collectors.toConcurrentMap(
+                        e -> e.getKey().getLabel(), 
+                        e -> e.getCount()
+                    )
+                );
     }
     
 }
