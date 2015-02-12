@@ -41,7 +41,7 @@ public class AggregateResult {
     public Map<String, Integer> getAggregate() {
         return result
                 .stream()
-                .sorted((a,b) -> b.getCount().compareTo(a.getCount()))
+                //.sorted((a,b) -> b.getCount().compareTo(a.getCount()))
                 .collect(
                     Collectors.toConcurrentMap(
                         e -> e.getKey().getLabel(), 
